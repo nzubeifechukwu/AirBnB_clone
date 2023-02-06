@@ -1,5 +1,5 @@
 # AirBnB Clone
-In this project, we will build a simple clone of the [AirBnB website](https://www.airbnb.com/)
+In this project, we will build a simple clone of the [AirBnB website](https://www.airbnb.com/).
 
 The project will be done in parts across four months, each part reflecting the students' level of knowledge at that point in the ALX SE programme.
 
