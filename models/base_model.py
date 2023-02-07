@@ -9,21 +9,26 @@ class BaseModel:
     '''Defines common attributes/methods for other classes
     '''
 
-    def __init__(self, id=None, created_at=None, updated_at=None):
+    def __init__(self, *args, **kwargs):
         '''Instantiates a BaseModel class
 
-        Args:
+        Attributes:
             id: String. Unique identifier for the instance. Defaults to None
             created_at: Current datetime when an instance is created
             updated_at: Current datetime when an instance is changed. Updated
                 every time the object changes
         '''
-        id = str(uuid.uuid4())
-        created_at = datetime.now()
-        updated_at = datetime.now()
-        self.id = id
-        self.created_at = created_at
-        self.updated_at = updated_at
+        if kwargs != {}:
+            for k,v in kwargs.items():
+                if k != '__class__':
+                    if k == 'created_at' or k == 'updated_at':
+                        setattr(self, k, datetime.fromisoformat(v))
+                    else:
+                        setattr(self, k, v)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def __str__(self):
         '''Demonstrates how to print the object
