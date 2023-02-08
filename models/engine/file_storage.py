@@ -3,6 +3,7 @@
 # and deserializes JSON files files to instances
 
 import json
+from models.base_model import BaseModel
 
 
 class FileStorage:
