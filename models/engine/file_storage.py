@@ -3,7 +3,6 @@
 # and deserializes JSON files files to instances
 
 import json
-from os import path
 
 
 class FileStorage:
@@ -42,6 +41,14 @@ class FileStorage:
         '''Deserializes the JSON file to __objects if the file exists;
             Otherwise do nothing (raise no exception)
         '''
-        if path.exists(FileStorage.__file_path):
+        try:
             with open(FileStorage.__file_path, 'r', encoding='utf-8') as f:
-                FileStorage.__objects = json.load(f)
+                objs = json.load(f)
+                for k, v in objs.items():
+                    if k not in FileStorage.__objects:
+                        name = v['__class__']
+                        # create a new object of type name
+                        obj = eval(f'{name}(**v)')
+                        self.new(obj)
+        except Exception:
+            pass
