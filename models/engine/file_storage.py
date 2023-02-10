@@ -4,6 +4,7 @@
 
 import json
 from models.base_model import BaseModel
+from models.user import User
 
 
 class FileStorage:
@@ -20,7 +21,7 @@ class FileStorage:
     def all(self):
         '''Returns the dictionary __objects
         '''
-        return FileStorage.__objects
+        return self.__objects
 
     def new(self, obj):
         '''Sets in __objects the obj with key <obj class name>.id
@@ -29,13 +30,13 @@ class FileStorage:
             obj: object to store in __objects
         '''
         key = type(obj).__name__ + '.' + obj.id
-        FileStorage.__objects[key] = obj
+        self.__objects[key] = obj
 
     def save(self):
         '''Serializes __objects to the JSON file
         '''
-        dict_obj = {k: v.to_dict() for k, v in FileStorage.__objects.items()}
-        with open(FileStorage.__file_path, 'w', encoding='utf-8') as f:
+        dict_obj = {k: v.to_dict() for k, v in self.__objects.items()}
+        with open(self.__file_path, 'w', encoding='utf-8') as f:
             json.dump(dict_obj, f)
 
     def reload(self):
@@ -43,10 +44,10 @@ class FileStorage:
             Otherwise do nothing (raise no exception)
         '''
         try:
-            with open(FileStorage.__file_path, 'r', encoding='utf-8') as f:
+            with open(self.__file_path, 'r', encoding='utf-8') as f:
                 objs = json.load(f)
                 for k, v in objs.items():
-                    if k not in FileStorage.__objects:
+                    if k not in self.__objects:
                         name = v['__class__']
                         # create a new object of type name
                         obj = eval(f'{name}(**v)')
