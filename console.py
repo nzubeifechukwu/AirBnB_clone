@@ -20,6 +20,8 @@ class HBNBCommand(cmd.Cmd):
     __classes = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place', 'Review']
 
     def do_create(self, line):
+        """create an instance of a class based on the class name
+        """
         if len(line) <= 0:
             print("** class name missing **")
             return
@@ -79,8 +81,9 @@ class HBNBCommand(cmd.Cmd):
         res = []
         if len(line) > 0:
             if arguments[0] in HBNBCommand.__classes:
-                for v in my_obj_dict.values():
-                    res.append(str(v))
+                for k, v in my_obj_dict.items():
+                    if arguments[0] in k:
+                        res.append(str(v))
             else:
                 print("** class doesn't exist **")
                 return
@@ -124,6 +127,22 @@ class HBNBCommand(cmd.Cmd):
         setattr(my_obj_dict["{}.{}".format(arguments[0],
                 arguments[1])], arguments[2], arguments[3])
         models.storage.save()
+
+    def default(self, line):
+        my_obj_dict = models.storage.all()
+        count = 0
+        string = "."
+        if string not in line:
+            print("*** Unknown syntax: {}".format(line))
+            return
+        commands = line.split('.')
+        if commands[1] == 'all()':
+            self.do_all(commands[0])
+        elif commands[1] == 'count':
+            for k, v in my_obj_dict.items():
+                if commands[0] in k:
+                    count += 1
+            print(count)
 
     def do_quit(self, line):
         """Quit command to exit the program
