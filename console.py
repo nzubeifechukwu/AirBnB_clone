@@ -1,9 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """command line interpreter"""
 
 
 import cmd
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 from models.engine.file_storage import FileStorage
 import models
 
@@ -11,7 +17,7 @@ import models
 class HBNBCommand(cmd.Cmd):
     """definition of class"""
     prompt = "(hbnb) "
-    __classes = ['BaseModel']
+    __classes = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place', 'Review']
 
     def do_create(self, line):
         if len(line) <= 0:
@@ -109,6 +115,12 @@ class HBNBCommand(cmd.Cmd):
             del arguments[4:]
         if arguments[3].startswith('"'):
             arguments[3] = arguments[3].replace('"', '')
+        if arguments[3].isdigit():
+            arguments[3] = int(arguments[3])
+        try:
+            arguments[3] = float(arguments[3])
+        except ValueError:
+            pass
         setattr(my_obj_dict["{}.{}".format(arguments[0],
                 arguments[1])], arguments[2], arguments[3])
         models.storage.save()
