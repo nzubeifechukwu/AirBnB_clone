@@ -20,7 +20,7 @@ class TestBaseModel(unittest.TestCase):
         '''
         self.assertIs(type(self.base), BaseModel)
 
-    # Test types of instance attributes
+    # Test instance attributes
 
     def test_id_type(self):
         '''Tests type of id attribute
@@ -36,6 +36,16 @@ class TestBaseModel(unittest.TestCase):
         '''Tests type of updated_at attribute
         '''
         self.assertIs(type(self.base.updated_at), datetime)
+
+    def test_class_type(self):
+        '''Tests the type of the __class__ attribute
+        '''
+        self.assertIs(type(self.base.__class__), type)
+
+    def test_class_value(self):
+        '''Tests the value of the __class__ attribute
+        '''
+        self.assertEqual(self.base.__class__, BaseModel)
 
     # Test instance methods
 
