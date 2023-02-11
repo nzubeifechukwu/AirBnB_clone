@@ -3,6 +3,7 @@
 
 
 import cmd
+import re
 from models.base_model import BaseModel
 from models.user import User
 from models.state import State
@@ -17,7 +18,9 @@ import models
 class HBNBCommand(cmd.Cmd):
     """definition of class"""
     prompt = "(hbnb) "
-    __classes = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place', 'Review']
+    __classes = [
+                'BaseModel', 'User', 'State', 'City', 'Amenity',
+                'Place', 'Review']
 
     def do_create(self, line):
         """create an instance of a class based on the class name
@@ -132,6 +135,8 @@ class HBNBCommand(cmd.Cmd):
         my_obj_dict = models.storage.all()
         count = 0
         string = "."
+        show = "show"
+        destroy = "destroy"
         if string not in line:
             print("*** Unknown syntax: {}".format(line))
             return
@@ -139,10 +144,30 @@ class HBNBCommand(cmd.Cmd):
         if commands[1] == 'all()':
             self.do_all(commands[0])
         elif commands[1] == 'count':
+            if commands[0] not in HBNBCommand.__classes:
+                print("** class doesn't exist **")
+                return
             for k, v in my_obj_dict.items():
                 if commands[0] in k:
                     count += 1
             print(count)
+        elif show in commands[1]:
+            ags = commands[1].split('(')
+            if len(ags) < 2:
+                print("*** Unknown syntax: {}".format(line))
+                return
+            ags[1] = ags[1].replace(")", '')
+            self.do_show("{} {}".format(commands[0], ags[1]))
+        elif destroy in commands[1]:
+            ags = commands[1].split('(')
+            if len(ags) < 2:
+                print("*** Unknown syntax: {}".format(line))
+                return
+            ags[1] = ags[1].replace(")", '')
+            self.do_destroy("{} {}".format(commands[0], ags[1]))
+
+        else:
+            print("*** Unknown syntax: {}".format(line))
 
     def do_quit(self, line):
         """Quit command to exit the program
