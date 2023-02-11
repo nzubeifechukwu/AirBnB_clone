@@ -123,10 +123,6 @@ class HBNBCommand(cmd.Cmd):
             arguments[3] = arguments[3].replace('"', '')
         if arguments[3].isdigit():
             arguments[3] = int(arguments[3])
-        try:
-            arguments[3] = float(arguments[3])
-        except ValueError:
-            pass
         setattr(my_obj_dict["{}.{}".format(arguments[0],
                 arguments[1])], arguments[2], arguments[3])
         models.storage.save()
@@ -137,13 +133,14 @@ class HBNBCommand(cmd.Cmd):
         string = "."
         show = "show"
         destroy = "destroy"
+        update = "update"
         if string not in line:
             print("*** Unknown syntax: {}".format(line))
             return
         commands = line.split('.')
         if commands[1] == 'all()':
             self.do_all(commands[0])
-        elif commands[1] == 'count':
+        elif commands[1] == 'count()':
             if commands[0] not in HBNBCommand.__classes:
                 print("** class doesn't exist **")
                 return
@@ -165,7 +162,21 @@ class HBNBCommand(cmd.Cmd):
                 return
             ags[1] = ags[1].replace(")", '')
             self.do_destroy("{} {}".format(commands[0], ags[1]))
-
+        elif update in commands[1]:
+            ags1 = commands[1].split('(')
+            ags2 = ags1[1].split()
+            for index, item in enumerate(ags2):
+                item.replace('"', '')
+            if ags2[0]:
+                ags2[0] = ags2[0].replace('"', '')
+                ags2[0] = ags2[0].replace(',', '')
+            if ags2[1]:
+                ags2[1] = ags2[1].replace(',', '').replace('"', '')
+            if ags2[2]:
+                ags2[2] = ags2[2].replace(")", '')
+            else:
+                ags2[2] = ''
+            self.do_update("{} {} {} {}".format(commands[0], ags2[0], ags2[1], ags2[2]))
         else:
             print("*** Unknown syntax: {}".format(line))
 
