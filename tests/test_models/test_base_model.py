@@ -2,6 +2,7 @@
 # Unit Tests for the BaseModel class
 
 import unittest
+from datetime import datetime
 from models.base_model import BaseModel
 
 
@@ -19,4 +20,39 @@ class TestBaseModel(unittest.TestCase):
         '''
         self.assertIs(type(self.base), BaseModel)
 
-    def test_attribute_types
+    # Test types of instance attributes
+
+    def test_id_type(self):
+        '''Tests type of id attribute
+        '''
+        self.assertIs(type(self.base.id), str)
+
+    def test_created_at_type(self):
+        '''Tests type of attribute created_at
+        '''
+        self.assertIs(type(self.base.created_at), datetime)
+
+    def test_updated_at_type(self):
+        '''Tests type of updated_at attribute
+        '''
+        self.assertIs(type(self.base.updated_at), datetime)
+
+    # Test instance methods
+
+    def test_str(self):
+        '''Tests the __str__ method
+        '''
+        form = '[BaseModel] ({}) {}'.format(self.base.id, self.base.__dict__)
+        self.assertEqual(self.base.__str__(), form)
+
+    def test_to_dict(self):
+        '''Tests the to_dict method
+        '''
+        dictionary = {}
+        for k, v in self.base.__dict__.items():
+            if k == 'created_at' or k == 'updated_at':
+                dictionary[k] = v.isoformat()
+            else:
+                dictionary[k] = v
+        dictionary['__class__'] = 'BaseModel'
+        self.assertEqual(self.base.to_dict(), dictionary)
