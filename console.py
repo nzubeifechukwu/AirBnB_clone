@@ -168,6 +168,10 @@ class HBNBCommand(cmd.Cmd):
         elif des[0] == 'update':
             ags1 = commands[1].split('(')
             ags2 = ags1[1].split()
+            if ags2[1].startswith("{"):
+                ags2[1] = ags2[1].replace("{", '')
+                ags2[1] = ags2[1].replace(":", '').replace("'", '')
+                ags2[2] = ags2[2].replace(",", '').replace('}', '')
             for index, item in enumerate(ags2):
                 item.replace('"', '')
             try:
