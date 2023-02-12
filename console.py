@@ -165,20 +165,27 @@ class HBNBCommand(cmd.Cmd):
                 return
             des[1] = des[1].replace(")", '')
             self.do_destroy("{} {}".format(commands[0], des[1]))
-        elif update in commands[1]:
+        elif des[0] == 'update':
             ags1 = commands[1].split('(')
             ags2 = ags1[1].split()
             for index, item in enumerate(ags2):
                 item.replace('"', '')
-            if ags2[0]:
+            try:
                 ags2[0] = ags2[0].replace('"', '')
                 ags2[0] = ags2[0].replace(',', '')
-            if ags2[1]:
+            except IndexError:
+                print("** instance id missing **")
+                return
+            try:
                 ags2[1] = ags2[1].replace(',', '').replace('"', '')
-            if ags2[2]:
+            except IndexError:
+                print("** attribute name missing **")
+                return
+            try:
                 ags2[2] = ags2[2].replace(")", '')
-            else:
-                ags2[2] = ''
+            except IndexError:
+                print("** value missing **")
+                return
             self.do_update("{} {} {} {}".format(commands[0],
                                                 ags2[0], ags2[1], ags2[2]))
         else:
