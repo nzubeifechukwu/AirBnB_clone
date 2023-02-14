@@ -199,6 +199,8 @@ class HBNBCommand(cmd.Cmd):
             except IndexError:
                 print("** value missing **")
                 return
+            if ags2[2].isdigit():
+                ags2[2] = int(ags2[2])
             self.do_update("{} {} {} {}".format(commands[0],
                                                 ags2[0], ags2[1], ags2[2]))
         else:
