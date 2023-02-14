@@ -109,7 +109,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
         if "{}.{}".format(arguments[0], arguments[1]) not in my_obj_dict:
-            print("** no instance found ** ")
+            print("** no instance found **")
             return
         if len(arguments) < 3:
             print("** attribute name missing **")
@@ -168,6 +168,15 @@ class HBNBCommand(cmd.Cmd):
         elif des[0] == 'update':
             ags1 = commands[1].split('(')
             ags2 = ags1[1].split()
+            if len(ags2) < 1:
+                print("** instance id missing **")
+                return
+            if len(ags2) < 2:
+                print("** attribute name missing **")
+                return
+            if len(ags2) < 3:
+                print("** value missing **")
+                return
             if ags2[1].startswith("{"):
                 ags2[1] = ags2[1].replace("{", '')
                 ags2[1] = ags2[1].replace(":", '').replace("'", '')
@@ -186,7 +195,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** attribute name missing **")
                 return
             try:
-                ags2[2] = ags2[2].replace(")", '')
+                ags2[2] = ags2[2].replace(")", '').replace('"', '')
             except IndexError:
                 print("** value missing **")
                 return
