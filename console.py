@@ -64,14 +64,14 @@ class HBNBCommand(cmd.Cmd):
             return
         arguments = line.split()
         if arguments[0] not in HBNBCommand.__classes:
-            print("** class doesn't exist** ")
+            print("** class doesn't exist **")
             return
         if len(arguments) < 2:
             print("** instance id missing **")
             return
         my_obj_dict = models.storage.all()
         if "{}.{}".format(arguments[0], arguments[1]) not in my_obj_dict:
-            print("** no instance found** ")
+            print("** no instance found **")
             return
         my_obj_dict.pop("{}.{}".format(arguments[0], arguments[1]))
         models.storage.save()
@@ -109,7 +109,7 @@ class HBNBCommand(cmd.Cmd):
             print("** instance id missing **")
             return
         if "{}.{}".format(arguments[0], arguments[1]) not in my_obj_dict:
-            print("** no instance found ** ")
+            print("** no instance found **")
             return
         if len(arguments) < 3:
             print("** attribute name missing **")
@@ -123,10 +123,6 @@ class HBNBCommand(cmd.Cmd):
             arguments[3] = arguments[3].replace('"', '')
         if arguments[3].isdigit():
             arguments[3] = int(arguments[3])
-        try:
-            arguments[3] = float(arguments[3])
-        except ValueError:
-            pass
         setattr(my_obj_dict["{}.{}".format(arguments[0],
                 arguments[1])], arguments[2], arguments[3])
         models.storage.save()
@@ -137,13 +133,15 @@ class HBNBCommand(cmd.Cmd):
         string = "."
         show = "show"
         destroy = "destroy"
+        update = "update"
         if string not in line:
             print("*** Unknown syntax: {}".format(line))
             return
         commands = line.split('.')
+        des = commands[1].split('(')
         if commands[1] == 'all()':
             self.do_all(commands[0])
-        elif commands[1] == 'count':
+        elif commands[1] == 'count()':
             if commands[0] not in HBNBCommand.__classes:
                 print("** class doesn't exist **")
                 return
@@ -158,14 +156,53 @@ class HBNBCommand(cmd.Cmd):
                 return
             ags[1] = ags[1].replace(")", '')
             self.do_show("{} {}".format(commands[0], ags[1]))
-        elif destroy in commands[1]:
-            ags = commands[1].split('(')
-            if len(ags) < 2:
+        elif des[0] == 'destroy':
+            # elif destroy in commands[1]:
+            # ags = commands[1].split('(')
+            # if len(ags) < 2:
+            if len(des) < 2:
                 print("*** Unknown syntax: {}".format(line))
                 return
-            ags[1] = ags[1].replace(")", '')
-            self.do_destroy("{} {}".format(commands[0], ags[1]))
-
+            des[1] = des[1].replace(")", '')
+            self.do_destroy("{} {}".format(commands[0], des[1]))
+        elif des[0] == 'update':
+            ags1 = commands[1].split('(')
+            ags2 = ags1[1].split()
+            if len(ags2) < 1:
+                print("** instance id missing **")
+                return
+            if len(ags2) < 2:
+                print("** attribute name missing **")
+                return
+            if len(ags2) < 3:
+                print("** value missing **")
+                return
+            if ags2[1].startswith("{"):
+                ags2[1] = ags2[1].replace("{", '')
+                ags2[1] = ags2[1].replace(":", '').replace("'", '')
+                ags2[2] = ags2[2].replace(",", '').replace('}', '')
+            for index, item in enumerate(ags2):
+                item.replace('"', '')
+            try:
+                ags2[0] = ags2[0].replace('"', '')
+                ags2[0] = ags2[0].replace(',', '')
+            except IndexError:
+                print("** instance id missing **")
+                return
+            try:
+                ags2[1] = ags2[1].replace(',', '').replace('"', '')
+            except IndexError:
+                print("** attribute name missing **")
+                return
+            try:
+                ags2[2] = ags2[2].replace(")", '').replace('"', '')
+            except IndexError:
+                print("** value missing **")
+                return
+            if ags2[2].isdigit():
+                ags2[2] = int(ags2[2])
+            self.do_update("{} {} {} {}".format(commands[0],
+                                                ags2[0], ags2[1], ags2[2]))
         else:
             print("*** Unknown syntax: {}".format(line))
 
