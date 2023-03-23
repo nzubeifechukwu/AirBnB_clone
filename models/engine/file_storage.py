@@ -23,10 +23,14 @@ class FileStorage:
     __file_path = 'file.json'
     __objects = {}
 
-    def all(self):
-        '''Returns the dictionary __objects
+    def all(self, cls=None):
+        '''Returns all objects of type cls in __objects
         '''
-        return self.__objects
+        obj_dict = {}
+        for key, value in self.__objects.items():
+            if type(value) == cls:
+                obj_dict[key] = value
+        return obj_dict
 
     def new(self, obj):
         '''Sets in __objects the obj with key <obj class name>.id
@@ -59,3 +63,15 @@ class FileStorage:
                         self.new(obj)
         except Exception:
             pass
+
+    def delete(self, obj=None):
+        '''Deletes obj from __objects
+        '''
+        if obj is None:
+            pass
+        else:
+            for key, value in self.__objects.items():
+                if value == obj:
+                    obj_key = key
+                    break
+            del self.__objects[obj_key]
