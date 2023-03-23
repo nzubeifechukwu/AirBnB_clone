@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 # This module contains the Review class
 
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String
+from sqlalchemy.orm import ForeignKey
 
 
-class Review(BaseModel):
+class Review(BaseModel, Base):
     '''Review class inherits from BaseModel class
 
     Attributes:
@@ -12,6 +14,7 @@ class Review(BaseModel):
         user_id: string (will later be set to User.id)
         text: string
     '''
-    place_id = ''
-    user_id = ''
-    text = ''
+    __tablename__ = 'reviews'
+    place_id = Column(String(60), ForeignKey('places.id'))
+    user_id = Column(String(60), ForeignKey('users.id'))
+    text = Column(String(1024), nullable=False)
