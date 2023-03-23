@@ -2,8 +2,10 @@
 # This module contains the Place class
 
 from models.base_model import BaseModel, Base
+from models.review import Review
+import models
 from sqlalchemy import Column, String, Integer, Float
-from sqlalchemy.orm import ForeignKey
+from sqlalchemy.orm import ForeignKey, relationship
 
 
 class Place(BaseModel, Base):
@@ -34,3 +36,14 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     amenity_ids = []
+    reviews = relationship('Review', backref='place')
+
+    @property
+    def reviews(self):
+        '''Returns a list of Review instances with place_id equal to Place.id
+        '''
+        reviews_list = []
+        for review in models.storage.all(Review).values():
+            if review.place_id == self.id:
+                reviews_list.append(review)
+        return reviews_list
