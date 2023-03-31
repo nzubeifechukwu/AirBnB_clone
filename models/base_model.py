@@ -41,8 +41,11 @@ class BaseModel:
     def __str__(self):
         '''Demonstrates how to print the object
         '''
+        dict_copy = self.__dict__.copy()
+        if '_sa_instance_state' in dict_copy:
+            del dict_copy['_sa_instance_state']
         return '[{}] ({}) {}'.format(
-            type(self).__name__, self.id, self.__dict__)
+            type(self).__name__, self.id, dict_copy)
 
     def save(self):
         '''Updates the public instance attribute updated_at
@@ -64,7 +67,7 @@ class BaseModel:
                 dictionary[k] = v
         dictionary['__class__'] = type(self).__name__
         for key in dictionary:
-            if key = '_sa_instance_state':
+            if key == '_sa_instance_state':
                 k = key
                 break
         del dictionary[k]
